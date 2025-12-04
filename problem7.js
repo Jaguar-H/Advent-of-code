@@ -1,43 +1,43 @@
 import { run } from "./problem5.js";
 const program = [
- 3,23,3,24,1002,24,10,24,1002,23,-1,23,
-101,5,23,23,1,24,23,23,4,23,99,0,0
+  3,8,1001,8,10,8,105,1,0,0,21,38,55,64,81,106,187,268,349,430,99999,3,9,101,2,9,9,1002,9,2,9,101,5,9,9,4,9,99,3,9,102,2,9,9,101,3,9,9,1002,9,4,9,4,9,99,3,9,102,2,9,9,4,9,99,3,9,1002,9,5,9,1001,9,4,9,102,4,9,9,4,9,99,3,9,102,2,9,9,1001,9,5,9,102,3,9,9,1001,9,4,9,102,5,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,101,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,99,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,101,1,9,9,4,9,99,3,9,102,2,9,9,4,9,3,9,1001,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,102,2,9,9,4,9,3,9,101,2,9,9,4,9,3,9,101,1,9,9,4,9,3,9,101,1,9,9,4,9,3,9,1001,9,1,9,4,9,3,9,102,2,9,9,4,9,99,3,9,101,1,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,3,9,1002,9,2,9,4,9,3,9,1002,9,2,9,4,9,3,9,101,1,9,9,4,9,3,9,102,2,9,9,4,9,99
 ];
-const permutation = (value) =>{
-  const permute = []
-  for (const i of value){
-    const p = permutation(value.filter(x => x != i))
-    
-    p.length === 0 ? permute.push(i,0) : permute.push(i,p.flatMap(x => x))
-    
-  }
-  return permute
-}
 
-console.log(permutation([1,2,3]));
-const c = permutation([1,2,3])
-
-const makeComb = (num,arr) => {
-  console.log(num,arr);
-  
-  let x = []
-  for (const i of arr){
-    
-    if ( i === 0 ){
-      console.log(num,x);
-      x = [num]
-      continue
-
+export const permutation = (array) => {
+  if (array.length === 0) return [[]];
+  const result = [];
+  for (let i = 0; i < array.length; i++) {
+    const num = array[i];
+    const restPerm = permutation(array.filter((_, j) => i !== j));
+    for (const permute of restPerm) {
+      result.push([num, ...permute]);
     }
-    x.push[i]
-    console.log(x);
-    
-
   }
+
+  return result;
+};
+
+const possibleCombination = permutation([9,7,8,5,6]);
+let maxThrust = -Infinity;
+let p = [...program];
+let out = 0
+for (const i of possibleCombination) {
+  const [a, b, c, d, e] = i;
+  out = run(p, 0, a);
+
+  p = [...program];
+  out = run(p, out, b);
+
+  p = [...program];
+  out = run(p, out, c);
+
+  p = [...program];
+  out = run(p, out, d);
+
+  p = [...program];
+  out = run(p, out, e);
+
+  maxThrust = out > maxThrust ? out : maxThrust;
 }
 
-for (let i = 0 ; i < c.length ; i += 2){
-  makeComb(c[i],c[i+1])
-}
-
-
+console.log(maxThrust);

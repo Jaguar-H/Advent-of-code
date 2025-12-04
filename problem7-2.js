@@ -1,14 +1,40 @@
-// const input = [
-// 3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,
-// 1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,
-// 999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99
-// ];
-const input = [3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0]
-export function run(program, inputValue,code) {
+import { permutation } from "./problem7.js";
+
+const program = [
+  3,
+  26,
+  1001,
+  26,
+  -4,
+  26,
+  3,
+  27,
+  1002,
+  27,
+  2,
+  27,
+  1,
+  27,
+  26,
+  27,
+  4,
+  27,
+  1001,
+  28,
+  -1,
+  28,
+  1005,
+  28,
+  6,
+  99,
+  0,
+  0,
+  5,
+];
+
+export function run(program, inputValue, code, ip, flag) {
   const mem = [...program];
-  let ip = 0;
-  let out = 0
-  let inputs = 0
+  let inputs = 0;
 
   const get = (mode, idx) => mode === 0 ? mem[mem[idx]] : mem[idx];
 
@@ -16,7 +42,7 @@ export function run(program, inputValue,code) {
     const str = (mem[ip] + "").padStart(5, "0");
     return [+str[2], +str[1], +str[0]];
   };
-  
+
   const ops = {
     1: () => {
       const [mode1, mode2] = modes();
@@ -29,17 +55,16 @@ export function run(program, inputValue,code) {
       ip += 4;
     },
     3: () => {
-      
       mem[mem[ip + 1]] = inputs === 0 ? code : inputValue;
-      inputs++
+      inputs++;
       ip += 2;
     },
     4: () => {
       const [mode1] = modes();
       const val = get(mode1, ip + 1);
-      out = val
-      // console.log(val);
       ip += 2;
+      return [val, ip, false];
+      // console.log(val);
     },
     5: () => {
       const [mode1, mode2] = modes();
@@ -67,15 +92,49 @@ export function run(program, inputValue,code) {
     },
   };
 
-
   while (true) {
     const opcode = mem[ip] % 100;
     if (opcode === 99) break;
     const op = ops[opcode];
-    op();
+    const out = op();
+    if (out !== undefined) return out;
   }
-  return out
+
+  return [inputValue, ip, true];
 }
 
-// console.log
-// (run(input, 3))
+const allPossiblepermutation = permutation([9, 7, 8, 5, 6]);
+let maxThrust = -Infinity;
+
+// for (const i of allPossiblepermutation) {
+const amp1 = [...program];
+const amp2 = [...program];
+const amp3 = [...program];
+const amp4 = [...program];
+const amp5 = [...program];
+
+let i1 = 0;
+let i2 = 0;
+let i3 = 0;
+let i4 = 0;
+let i5 = 0;
+
+let f1 = false;
+let f2 = false;
+let f3 = false;
+let f4 = false;
+let f5 = false;
+
+const [a, b, c, d, e] = [9, 8, 7, 6, 5];
+let out = 0;
+while (!(f1 && f2 && f3 && f4 && f5)) {
+  [out, i1, f1] = run(amp1, out, a, i1, f1);
+  [out, i2, f2] = run(amp2, out, b, i2, f2);
+  [out, i3, f3] = run(amp3, out, c, i3, f3);
+  [out, i4, f4] = run(amp4, out, d, i4, f4);
+  [out, i5, f5] = run(amp5, out, e, i5, f5);
+  console.log(i1,i2,i3,i4,i5);
+}
+maxThrust = out > maxThrust ? out : maxThrust;
+// }
+console.log(maxThrust);
