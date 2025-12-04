@@ -32,9 +32,8 @@ const program = [
   5,
 ];
 
-export function run(program, inputValue, code, ip, flag) {
+export function run(program, inputValue, code, ip, flag,inputs) {
   const mem = [...program];
-  let inputs = 0;
 
   const get = (mode, idx) => mode === 0 ? mem[mem[idx]] : mem[idx];
 
@@ -63,7 +62,7 @@ export function run(program, inputValue, code, ip, flag) {
       const [mode1] = modes();
       const val = get(mode1, ip + 1);
       ip += 2;
-      return [val, ip, false];
+      return [val, ip, false,inputs];
       // console.log(val);
     },
     5: () => {
@@ -100,7 +99,7 @@ export function run(program, inputValue, code, ip, flag) {
     if (out !== undefined) return out;
   }
 
-  return [inputValue, ip, true];
+  return [inputValue, ip, true,inputs];
 }
 
 const allPossiblepermutation = permutation([9, 7, 8, 5, 6]);
@@ -119,6 +118,12 @@ let i3 = 0;
 let i4 = 0;
 let i5 = 0;
 
+let in1 = 0;
+let in2 = 0;
+let in3 = 0;
+let in4 = 0;
+let in5 = 0;
+
 let f1 = false;
 let f2 = false;
 let f3 = false;
@@ -128,12 +133,12 @@ let f5 = false;
 const [a, b, c, d, e] = [9, 8, 7, 6, 5];
 let out = 0;
 while (!(f1 && f2 && f3 && f4 && f5)) {
-  [out, i1, f1] = run(amp1, out, a, i1, f1);
-  [out, i2, f2] = run(amp2, out, b, i2, f2);
-  [out, i3, f3] = run(amp3, out, c, i3, f3);
-  [out, i4, f4] = run(amp4, out, d, i4, f4);
-  [out, i5, f5] = run(amp5, out, e, i5, f5);
-  console.log(i1,i2,i3,i4,i5);
+  [out, i1, f1,in1] = run(amp1, out, a, i1, f1, in1);
+  [out, i2, f2,in2] = run(amp2, out, b, i2, f2, in2);
+  [out, i3, f3,in3] = run(amp3, out, c, i3, f3, in3);
+  [out, i4, f4,in4] = run(amp4, out, d, i4, f4, in4);
+  [out, i5, f5,in5] = run(amp5, out, e, i5, f5, in5);
+  console.log(i1, i2, i3, i4, i5);
 }
 maxThrust = out > maxThrust ? out : maxThrust;
 // }
