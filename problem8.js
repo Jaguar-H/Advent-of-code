@@ -48,6 +48,15 @@ for (let i = 0; i < photo[0].length; i++) {
   message.push(p);
 }
 
-console.log(message.join(""));
+for (let i = 0; i < message.length; i += width) {
+  console.log(
+    message
+      .slice(i, i + width)
+      .join("")
+      .replace(/0/g, " ")
+      .replace(/1/g, "█")
+  );
+}
+
 
 
