@@ -8,13 +8,17 @@ export function run(program, inputValue) {
       case 0:
         return mem[mem[idx]] ? mem[mem[idx]] : 0;
       case 1:
-        return mem[idx];
+        return mem[idx] ? mem[idx] : 0;
       case 2:
         return mem[mem[idx] + relativeInput]
           ? mem[mem[idx] + relativeInput]
           : 0;
     }
   };
+
+  const getAdd = (mode,idx) => {
+    return mode === 0 ? idx : idx + relativeInput;
+  }
 
   const modes = () => {
     const str = (mem[ip] + "").padStart(5, "0");
@@ -24,17 +28,17 @@ export function run(program, inputValue) {
   const ops = {
     1: () => {
       const [mode1, mode2, mode3] = modes();
-      mem[get(mode3, ip + 3)] = get(mode1, ip + 1) + get(mode2, ip + 2);
+      mem[getAdd(mode3, ip + 3)] = get(mode1, ip + 1) + get(mode2, ip + 2);
       ip += 4;
     },
     2: () => {
       const [mode1, mode2,mode3] = modes();
-      mem[get(mode3,ip + 3)] = get(mode1, ip + 1) * get(mode2, ip + 2);
+      mem[getAdd(mode3,ip + 3)] = get(mode1, ip + 1) * get(mode2, ip + 2);
       ip += 4;
     },
     3: () => {
       const [mode1] = modes();
-      const add = get(mode1, ip + 1);
+      const add = getAdd(mode1, ip + 1);
       mem[add] = inputValue;
       ip += 2;
     },
@@ -59,14 +63,14 @@ export function run(program, inputValue) {
       const [mode1, mode2,mode3] = modes();
       const val1 = get(mode1, ip + 1);
       const val2 = get(mode2, ip + 2);
-      mem[get(mode3,ip + 3)] = val1 < val2 ? 1 : 0;
+      mem[getAdd(mode3,ip + 3)] = val1 < val2 ? 1 : 0;
       ip += 4;
     },
     8: () => {
       const [mode1, mode2,mode3] = modes();
       const val1 = get(mode1, ip + 1);
       const val2 = get(mode2, ip + 2);
-      mem[get(mode3,ip + 3)] = val1 === val2 ? 1 : 0;
+      mem[getAdd(mode3,ip + 3)] = val1 === val2 ? 1 : 0;
       ip += 4;
     },
 
