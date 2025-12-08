@@ -1,5 +1,5 @@
 const input = [
-  1,
+  2,
   380,
   379,
   385,
@@ -2236,10 +2236,18 @@ const input = [
   8,
   561969,
 ];
-export function run(program, inputValue, ip) {
-  const mem = program;
+
+let ball = 0;
+let tile = 0;
+let ip = 0;
+let halt = false;
+let out = 0;
+let gotInput = false;
+let relativeInput = 0;
+
+export function run() {
+  const mem = input;
   let out = [];
-  let relativeInput = 0;
   const get = (mode, idx) => {
     switch (mode) {
       case 0:
@@ -2276,7 +2284,8 @@ export function run(program, inputValue, ip) {
     3: () => {
       const [mode1] = modes();
       const add = getAdd(mode1, ip + 1);
-      mem[add] = inputValue;
+      
+      mem[add] = Math.sign(ball - tile)
       ip += 2;
     },
     4: () => {
@@ -2284,7 +2293,7 @@ export function run(program, inputValue, ip) {
       const val = get(mode1, ip + 1);
       out.push(val);
       ip += 2;
-      if (out.length === 3) return [out, ip, false];
+      if (out.length === 3) return out;
     },
     5: () => {
       const [mode1, mode2] = modes();
@@ -2324,60 +2333,70 @@ export function run(program, inputValue, ip) {
   while (true) {
     const opcode = mem[ip] % 100;
     if (opcode === 99) break;
+    console.log(opcode);
+    
     const op = ops[opcode];
+
     const output = op();
     if (output !== undefined) return output;
   }
-  return [out, ip, true];
+  halt = true
+  return out;
 }
 
-let ip = 0;
-let halt = false;
-let out = [];
-
-const screen = [];
-const dataX = [];
-const dataY = [];
-const color = [];
+let score = 0
 
 while (!halt) {
-  [out, ip, halt] = run(input, 0, ip);
-  if (halt) break
-  dataX.push(out[0]);
-  dataY.push(out[1]);
-  color.push(out[2]);
-}
-console.log(dataY);
+  const out = run();
 
-const maxY = dataY.reduce((a, e) => {
-  if (e === undefined) return a;
-  return a > e ? a : e;
-}, -Infinity);
+  if (!out) continue;   
 
-for (let i = 0; i <= maxY; i++) {
-  screen.push([]);
-}
+  const [x, y, t] = out;
+  console.log(out);
+  
+  if (x === -1 && y === 0) {
+    score = t;
+    continue;           
+  }
 
-console.log(screen, "hello");
-
-const chooseBlock = (block) => {
-  const blocks = { 0: "  ", 1: "🟥", 2: "🟫", 3: "🥽", 4: "🟢" };
-  return blocks[block];
-};
-
-for (let i = 0; i < dataY.length; i++) {
-  const block = chooseBlock(color[i]);
-  console.clear("");
-  screen.forEach((element) => {
-    console.log(element.join(""));
-  });
-  screen[dataY[i]][dataX[i]] = block;
+  if (t === 4) ball = x;
+  if (t === 3) tile = x;
 }
 
-const col = {};
-color.forEach((e) => {
-  col[e] = (col[e] || 0) + 1;
-});
-console.log(col);
 
-//253
+console.log(score,true);
+
+// console.log(dataY);
+
+// const maxY = dataY.reduce((a, e) => {
+//   if (e === undefined) return a;
+//   return a > e ? a : e;
+// }, -Infinity);
+
+// for (let i = 0; i <= maxY; i++) {
+//   screen.push([]);
+// }
+
+// console.log(screen, "hello");
+
+// const chooseBlock = (block) => {
+//   const blocks = { 0: "  ", 1: "🟥", 2: "🟫", 3: "🥽", 4: "🟢" };
+//   return blocks[block];
+// };
+
+// for (let i = 0; i < dataY.length; i++) {
+//   const block = chooseBlock(color[i]);
+//   console.clear("");
+//   screen.forEach((element) => {
+//     console.log(element.join(""));
+//   });
+//   screen[dataY[i]][dataX[i]] = block;
+// }
+
+// const col = {};
+// color.forEach((e) => {
+//   col[e] = (col[e] || 0) + 1;
+// });
+// console.log(col);
+
+// //253
